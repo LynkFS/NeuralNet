@@ -14,7 +14,7 @@ The net is trained with only 1000 examples to limit training time\
 (less than 30 sec on desktop, approx 4 min on mobile)\
 which means it is not perfect.\
 \
-demo2: simple xor\
+demo2: simple xor
 ```
 Button.OnClick := procedure(sender:TObject)
   begin
@@ -64,10 +64,10 @@ Button.OnClick := procedure(sender:TObject)
     end;
   end;
   ```
-output
-
-NeuralNet started
-0 XOR 0: 0.05773579608792857 - should be 0
-1 XOR 0: 0.9403986284540853 - should be 1
-0 XOR 1: 0.9524118223319257 - should be 1
+output\
+\
+NeuralNet started\
+0 XOR 0: 0.05773579608792857 - should be 0\
+1 XOR 0: 0.9403986284540853 - should be 1\
+0 XOR 1: 0.9524118223319257 - should be 1\
 1 XOR 1: 0.05424365311145005 - should be 0
