@@ -7,7 +7,7 @@ No dependencies\
 Can be used in conjunction with DWS compilers\
 \
 demo: https://www.lynkit.com.au/neuralnet/neuralnet.html <br>
-(compiled with QTX)
+(compiled in QTX-IDE)
 \
 this demonstrates handwritten character recognition, based on the MNIST dataset\
 The net is trained with only 1000 examples to limit training time\
