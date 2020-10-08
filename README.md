@@ -14,7 +14,7 @@ The net is trained with only 1000 examples to limit training time\
 (less than 30 sec on desktop, approx 4 min on mobile)\
 which means it is not perfect.\
 \
-demo2: simple xor
+<b>demo2</b>: simple xor
 ```
   //Init neural network
     var MyNetwork : JW3NeuralNet := JW3NeuralNet.Create;
@@ -63,7 +63,8 @@ NeuralNet started\
 0 XOR 1: 1 - should be 1\
 1 XOR 1: 0 - should be 0\
 \
-demo3: is it a bird, is it a plane, is it a rocket (input : wings, engine)
+\
+<b>demo3</b>: is it a bird, is it a plane, is it a rocket (input : wings, engine)
 ```
 //Init neural network
   MyNetwork := JW3NeuralNet.Create;
