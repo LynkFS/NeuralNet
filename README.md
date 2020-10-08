@@ -82,19 +82,12 @@ NeuralNet started\
        begin
           var data: JW3TrainingRecord;
           data.&inputs := [x, y];
-          if (x=1) and (y=0) then data.&outputs := [1.0,0.0,0.0];
-          if (x=1) and (y=1) then data.&outputs := [0.0,1.0,0.0];
-          if (x=0) and (y=1) then data.&outputs := [0.0,0.0,1.0];
+          if (x=1) and (y=0) then data.&outputs := [1.0,0.0,0.0];     // wings no engine : bird
+          if (x=1) and (y=1) then data.&outputs := [0.0,1.0,0.0];     // wings, engine : plane
+          if (x=0) and (y=1) then data.&outputs := [0.0,0.0,1.0];     // no wings, engine : rocket
           if (x=0) and (y=0) then else
             MyNetwork.AddTrainingData(data.&inputs, data.&outputs);
         end;
-
-/*
-  wings no engine : bird
-  wings, engine : plane
-  no wings, engine : rocket
-*/
-
 //
   MyNetwork.LearningRate := 0.2;
   MyNetwork.TrainingSplit := 5;       //split trainingset randomly: 5% for testing, 95% training
