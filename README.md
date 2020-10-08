@@ -75,33 +75,42 @@ NeuralNet started\
 //
   MyNetwork.SeedNetwork;   //initialise with random values
 //
-  //feed examples. input: wings,engine  output: bird,plane,rocket
-  for var iter := 0 to 1000 do
+  //feed some examples. input: wings,engine  output: bird,plane,rocket
+  for var iter := 1 to 10 do  //just 10 examples
     for var x := 0 to 1 do
       for var y := 0 to 1 do
-       begin
-          var data: JW3TrainingRecord;
-          data.&inputs := [x, y];
-          if (x=1) and (y=0) then data.&outputs := [1.0,0.0,0.0];     // wings no engine : bird
-          if (x=1) and (y=1) then data.&outputs := [0.0,1.0,0.0];     // wings, engine : plane
-          if (x=0) and (y=1) then data.&outputs := [0.0,0.0,1.0];     // no wings, engine : rocket
-          if (x=0) and (y=0) then else
-            MyNetwork.AddTrainingData(data.&inputs, data.&outputs);
-        end;
+      begin
+        var data: JW3TrainingRecord;
+        data.&inputs := [x, y];
+        if (x=1) and (y=0) then data.&outputs := [1.0,0.0,0.0];    //wings no engine : bird
+        if (x=1) and (y=1) then data.&outputs := [0.0,1.0,0.0];    //both wings and engine : plane
+        if (x=0) and (y=1) then data.&outputs := [0.0,0.0,1.0];    //no wings, engine : rocket
+        if (x=0) and (y=0) then                                    //nothing : do nothing
+          else MyNetwork.AddTrainingData(data.&inputs, data.&outputs);
+      end;
 //
-  MyNetwork.LearningRate := 0.2;
-  MyNetwork.TrainingSplit := 5;       //split trainingset randomly: 5% for testing, 95% training
-  For var i := 0 to 50 do             //50 epochs
+  //train network
+  MyNetwork.LearningRate := 0.2;      //MyNetwork.TrainingSplit not necessary
+  For var i := 0 to 5 do              //5 epochs
     MyNetwork.Train;
 //
-  //test the 3 cases
-  console.log('bird '   + floattostr(MyNetwork.Test([1,0])) + ' - should be 0');
-  console.log('plane '  + floattostr(MyNetwork.Test([1,1])) + ' - should be 1');
-  console.log('rocket ' + floattostr(MyNetwork.Test([0,1])) + ' - should be 2');
+  //test
+  Button1.OnClick := procedure(sender: TObject)
+  begin
+    var i : integer := 0;
+    var j : integer := 0;
+    if CheckBox1.Checked Then i := 1;
+    if CheckBox2.Checked then j := 1;
+    if (i = 0) and (j = 0)
+    then Panel1.SetinnerHTML('unknown')
+    else begin
+      //run
+      var predictedIndex := MyNetwork.Test([i,j]);
+      case predictedIndex of
+        0 : Panel1.SetinnerHTML('bird');
+        1 : Panel1.SetinnerHTML('plane');
+        2 : Panel1.SetinnerHTML('rocket');
+      end;
+    end;
+  end;
   ```
-output\
-\
-NeuralNet started\
-bird 0 - should be 0\
-plane 1 - should be 1\
-rocket 2 - should be 2
