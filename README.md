@@ -16,10 +16,6 @@ which means it is not perfect.\
 \
 demo2: simple xor
 ```
-  Button.OnClick := procedure(sender:TObject)
-  begin
-    console.log('started');
-
   //Init neural network
     var MyNetwork : JW3NeuralNet := JW3NeuralNet.Create;
     //
@@ -57,7 +53,7 @@ demo2: simple xor
     console.log('0 xor 1 : ' + floattostr(MyNetwork.Test([0,1])) + ' - should be 1');
     console.log('1 xor 0 : ' + floattostr(MyNetwork.Test([1,0])) + ' - should be 1');
     console.log('1 xor 1 : ' + floattostr(MyNetwork.Test([1,1])) + ' - should be 0');
-  end;
+
   ```
 output\
 \
@@ -93,9 +89,9 @@ demo3: is it a bird, is it a plane, is it a rocket (input : wings, engine)
         end;
 
 /*
-  MyNetwork.AddTrainingData([1,0],[0.99,0.01,0.01]);     //wings no engine : bird
-  MyNetwork.AddTrainingData([1,1],[0.01,0.99,0.01]);     //wings, engine : plane
-  MyNetwork.AddTrainingData([0,1],[0.01,0.01,0.99]);     //no wings, engine : rocket
+  wings no engine : bird
+  wings, engine : plane
+  no wings, engine : rocket
 */
 
 //
