@@ -1,4 +1,4 @@
-﻿unit NeuralNet;   // added to GitHub (LynkFS/NeuralNet) 04/10/2020
+unit JNeuralNet;
 
 interface
 
@@ -17,7 +17,8 @@ type
 
   Function Transpose(Matrixin:TMatrix): TMatrix;
   Function DotX(Matrix1,Matrix2:TMatrix): TMatrix;
-  Function GetMaxIndex(row: integer; Matrix1: TMatrix): integer;
+  Function GetMaxIndexCol(column: integer; Matrix1: TMatrix): integer;
+  Function GetMaxIndexRow(row: integer; Matrix1: TMatrix): integer;
 
 //
 // feedforward general purpose neural network
@@ -25,7 +26,7 @@ type
 type
   JW3Layer = record
   //public
-    ActivationType : String;           // ['Sigmoid','Linear','Tanh']
+    ActivationType : String;           // ['Sigmoid']
     LayerType      : String;           // ['Input','Hidden','Output']
     MInput         : TMatrix;
     MOutput        : TMatrix;
@@ -37,8 +38,8 @@ type
 
   JW3TrainingRecord = record
   //public
-    &inputs  : array of float;
-    &outputs : array of float;
+		&inputs  : array of float;
+		&outputs : array of float;
     &use     : string;
   end;
 
@@ -65,7 +66,8 @@ type
     Procedure LoadData(data: variant);
     Procedure AddTrainingData (Inputs: Array of float; Outputs: Array of float);
     Procedure Train;
-    Procedure Test;
+    Procedure TestAll;
+    Function  Test(&input : array of float) : integer;
     function  VarToFloat(varia: variant): float;
   end;
 
@@ -81,12 +83,16 @@ begin
   inherited Create;
 
 /*
-- Randomize Sets the random generator seed to a random value.
-- SetRandSeed(seed: Integer) Sets the random generator seed to a given value.
+â€¢ Random: Float Returns random number from interval [0, 1).
+â€¢ RandomInt(range: Integer) Returns random number from interface [0, range).
+â€¢ RandG(mean, stdDev: Float): Float Generates random numbers with normal distribution using Marsaglia-Bray algorithm.
+â€¢ Randomize Sets the random generator seed to a random value.
+â€¢ RandSeed: Integer Returns the random generator seed.
+â€¢ SetRandSeed(seed: Integer) Sets the random generator seed to a given value.
 */
 
-  SetRandSeed(1);   
-  Randomize;        
+  SetRandSeed(1);
+  Randomize;
 
 end;
 
@@ -182,7 +188,7 @@ begin
 //  handle input layer
 //
       For var q := 0 to Layers[0].MInput.NrRows -1 do begin
-        Layers[0].MInput.SetValue(q,0,(TrainingSet.TrainingRecords[f].&inputs[q]/255*0.99)+0.01);
+        Layers[0].MInput.SetValue(q,0,(TrainingSet.TrainingRecords[f].&inputs[q]));
       end;
       Layers[0].MOutput := Layers[0].MInput;
 //
@@ -239,7 +245,7 @@ begin
 //
 end;
 
-Procedure JW3NeuralNet.Test;
+Procedure JW3NeuralNet.TestAll;
 begin
 //
 //  initialise 3 result matrices
@@ -258,7 +264,7 @@ begin
 //  handle input layer
 //
       For var q := 0 to Layers[0].MInput.NrRows -1 do begin
-        Layers[0].MInput.SetValue(q,0,(TrainingSet.TrainingRecords[f].&inputs[q]/255*0.99)+0.01);
+        Layers[0].MInput.SetValue(q,0,(TrainingSet.TrainingRecords[f].&inputs[q]));
       end;
       Layers[0].MOutput := Layers[0].MInput;
 //
@@ -286,7 +292,37 @@ begin
 //
 end;
 
-// helper function in lieu of VarToFloatDef which doesn't work
+Function JW3NeuralNet.Test(&input : array of float) : integer;
+begin
+//
+//  handle input layer
+//
+  For var q := 0 to Layers[0].MInput.NrRows -1 do begin
+    Layers[0].MInput.SetValue(q,0,&input[q]);
+  end;
+  Layers[0].MOutput := Layers[0].MInput;
+//
+//  handle subsequent layers
+//
+  For var p := 1 to Layers.Count -1 do begin
+    Layers[p].MInput := DotX(Layers[p].MWeights,Layers[p-1].MOutput);
+    For var i := 0 to Layers[p].MInput.NrRows -1 do begin
+      Layers[p].MOutput.SetValue(i,0,(1/(1+power(exp(1.0),-Layers[p].MInput.GetValue(i,0)))));
+    end;
+  end;
+//
+//  get the results
+//
+  //for var j := 0 to Layers[Layers.Count -1].MOutput.NrRows -1 do begin
+  //  console.log(Layers[Layers.Count -1].MOutput.GetValue(j,0));
+  //end;
+
+  //return highest index of output array
+  result := GetMaxIndexCol(0,Layers[Layers.Count -1].MOutput);
+//
+end;
+
+// helper function in lieu of VarToFloatDef
 Function JW3NeuralNet.VarToFloat(varia: variant): float;
 begin
   asm @result = @varia; end;
@@ -362,7 +398,21 @@ begin
   result := MyDotX;
 end;
 
-function GetMaxIndex(row: integer; Matrix1: TMatrix): integer;
+function GetMaxIndexCol(column: integer; Matrix1: TMatrix): integer;
+var
+  maxvalue : float;
+begin
+  MaxValue := VarToFloatDef(Matrix1.GetValue(0,column),-1);
+  Result := 0;
+  For var i := 0 to Matrix1.NrRows -1 do begin
+    if VarToFloatDef(Matrix1.GetValue(i, column),-1) > MaxValue then begin
+      MaxValue := VarToFloatDef(Matrix1.GetValue(i, column),-1);
+      Result := i;
+    end;
+  end;
+end;
+
+function GetMaxIndexRow(row: integer; Matrix1: TMatrix): integer;
 var
   maxvalue : float;
 begin
