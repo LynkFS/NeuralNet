@@ -6,7 +6,7 @@ Simple 3 layer feed-forward neural network component\
 No dependencies\
 Can be used in conjunction with DWS compilers\
 \
-demo1: https://www.lynkit.com.au/neuralnet/mnist/index.html <br>
+<b>demo1</b>: https://www.lynkit.com.au/neuralnet/mnist/index.html <br>
 (compiled in QTX-IDE)
 \
 this demonstrates handwritten character recognition, based on the MNIST dataset\
